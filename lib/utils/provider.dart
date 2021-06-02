@@ -10,7 +10,11 @@ class TodoClient extends ChangeNotifier {
   // get all todo data
   Future<void> gettodoList() async {
     var res = await _db.getTodoList();
-    if (res.length != 0) _todolist = res;
+    _todolist = [];
+    res.length != 0
+        ? res.forEach((element) => _todolist
+            .add({'id': element['id'], 'taskname': element['taskname']}))
+        : _todolist = [];
     notifyListeners();
   }
 
@@ -23,12 +27,15 @@ class TodoClient extends ChangeNotifier {
   // update task in local db
   void updateTask(id, text) async {
     await _db.updateTask(id, text);
-    gettodoList();
+    _todolist[_todolist.indexWhere((element) => element['id'] == id)]
+        ['taskname'] = text;
+    notifyListeners();
   }
 
   // delete task in local db
   void deleteTask(id) async {
     await _db.deleteTask(id);
-    gettodoList();
+    _todolist.removeWhere((element) => element['id'] == id);
+    notifyListeners();
   }
 }
