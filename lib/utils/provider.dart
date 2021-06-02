@@ -11,10 +11,9 @@ class TodoClient extends ChangeNotifier {
   Future<void> gettodoList() async {
     var res = await _db.getTodoList();
     _todolist = [];
-    res.length != 0
-        ? res.forEach((element) => _todolist
-            .add({'id': element['id'], 'taskname': element['taskname']}))
-        : _todolist = [];
+    if (res.length != 0)
+      res.forEach((element) => _todolist
+          .add({'id': element['id'], 'taskname': element['taskname']}));
     notifyListeners();
   }
 
